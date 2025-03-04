@@ -21,7 +21,7 @@ Download Termux from [F-Droid](https://f-droid.org/packages/com.termux/) or [Git
 pkg update && pkg upgrade -y
 pkg install python git -y
 pip install -r requirements.txt
-git clone https://github.com/your-username/ttt-tools.git  # (Replace with actual repo)
+git clone https://github.com/TechTrio98/TTT-Tools.git
 cd ttt-tools
 python ttt-tools.py
 ```
