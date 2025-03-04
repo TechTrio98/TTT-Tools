@@ -2,7 +2,6 @@ import os
 import sys
 import random
 import socket
-import platform
 import base64
 import psutil
 import requests
@@ -12,8 +11,8 @@ from pyfiglet import figlet_format
 
 # Function to Display Header (Always Visible)
 def show_header():
-    os.system("clear")  # Clears only previous commands but keeps the header
-    title = colored(figlet_format("TTT TOOLS"), "white")  # White Bold ASCII Text
+    os.system("clear")  
+    title = colored(figlet_format("TTT TOOLS"), "white")
     print(title)
     print(colored("TechTrio™ © 2025", "magenta"))
     print(colored("Author: Ashwith", "magenta"))
@@ -72,10 +71,9 @@ def show_commands():
 
 # Function Definitions
 def get_battery_status():
-    battery = psutil.sensors_battery()
-    if battery:
-        print(f"Battery: {battery.percent}% | Charging: {battery.power_plugged}")
-    else:
+    try:
+        os.system("termux-battery-status")
+    except Exception:
         print("Battery info not available.")
 
 def get_disk_usage():
@@ -87,15 +85,23 @@ def get_uptime():
     print(f"System Uptime: {int(uptime // 3600)} hours, {int((uptime % 3600) // 60)} minutes")
 
 def get_ip():
-    ip = requests.get("https://api64.ipify.org?format=json").json()["ip"]
-    print(f"Public IP: {ip}")
+    try:
+        ip = requests.get("https://api64.ipify.org?format=json", timeout=5).json()["ip"]
+        print(f"Public IP: {ip}")
+    except requests.exceptions.RequestException:
+        print("Error: Could not retrieve IP. Check your internet connection.")
 
-def get_cpu_usage():
-    print(f"CPU Usage: {psutil.cpu_percent()}%")
+def ping_website(site):
+    os.system(f"ping -c 4 {site}")
 
-def get_memory_usage():
-    mem = psutil.virtual_memory()
-    print(f"Memory: {mem.percent}% used")
+def netstat_info():
+    os.system("netstat -tulnp")
+
+def show_processes():
+    os.system("ps aux")
+
+def kill_process(pid):
+    os.system(f"kill {pid}")
 
 def encrypt_text(text):
     encoded = base64.b64encode(text.encode()).decode()
@@ -114,12 +120,27 @@ def generate_password():
     print(f"Generated Password: {password}")
 
 def fetch_joke():
-    joke = requests.get("https://v2.jokeapi.dev/joke/Any").json()
-    if joke["type"] == "single":
-        print(joke["joke"])
-    else:
-        print(joke["setup"])
-        print(joke["delivery"])
+    try:
+        joke = requests.get("https://v2.jokeapi.dev/joke/Any").json()
+        if joke["type"] == "single":
+            print(joke["joke"])
+        else:
+            print(joke["setup"])
+            print(joke["delivery"])
+    except:
+        print("Error: Unable to fetch a joke.")
+
+def text_to_speech(text):
+    os.system(f"termux-tts-speak '{text}'")
+
+def speech_to_text():
+    os.system("termux-speech-to-text")
+
+def generate_qr(text):
+    os.system(f"qrencode -o qr.png '{text}' && termux-open qr.png")
+
+def scan_qr():
+    os.system("termux-qrcode-decode")
 
 # Command Handling
 while True:
@@ -129,7 +150,7 @@ while True:
         print(colored("Exiting TTT TOOLS...", "red"))
         sys.exit()
     elif command == "clear":
-        show_header()  # Clears the screen but keeps the header visible
+        show_header()
     elif command == "battery":
         get_battery_status()
     elif command == "disk":
@@ -138,18 +159,30 @@ while True:
         get_uptime()
     elif command == "ip":
         get_ip()
+    elif command.startswith("ping "):
+        ping_website(command.split(" ")[1])
+    elif command == "netstat":
+        netstat_info()
+    elif command == "ps":
+        show_processes()
+    elif command.startswith("kill "):
+        kill_process(command.split(" ")[1])
     elif command.startswith("encrypt "):
         encrypt_text(command[8:])
     elif command.startswith("decrypt "):
         decrypt_text(command[8:])
-    elif command == "cpu":
-        get_cpu_usage()
-    elif command == "memory":
-        get_memory_usage()
     elif command == "password":
         generate_password()
     elif command == "joke":
         fetch_joke()
+    elif command.startswith("say "):
+        text_to_speech(command[4:])
+    elif command == "listen":
+        speech_to_text()
+    elif command.startswith("qr "):
+        generate_qr(command[3:])
+    elif command == "scanqr":
+        scan_qr()
     elif command == "help":
         show_commands()
     else:
