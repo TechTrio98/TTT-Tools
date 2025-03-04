@@ -2,6 +2,8 @@
 
 **TTT TOOLS** is a powerful, multi-functional tool designed for **Termux** users. It provides **40+ useful commands** for system monitoring, networking, encryption, file management, and more.  
 
+![image](assets/image.jpg)
+
 ## ✨ Features  
 ✅ All-in-One Utility  
 ✅ Lightweight & Fast  
