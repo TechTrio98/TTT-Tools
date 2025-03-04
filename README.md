@@ -78,7 +78,7 @@ qr <text> - Generate a QR code
 **Developer:** Ashwith
 **Team:** TechTrio™
 **Year:** 2025
-**GitHub/Website:** 
+**GitHub/Website:** https://github.com/TechTrio98
 
 **Contributions & suggestions are welcome! 🚀**
 
